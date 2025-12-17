@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { auth } from '../../firebase/firebase.init';
 import { IoIosEye, IoIosEyeOff } from 'react-icons/io';
+import { Link } from 'react-router';
 
 
 const Register = () => {
@@ -61,7 +62,13 @@ const Register = () => {
         createUserWithEmailAndPassword(auth, email, password)
             .then(result => {
                 console.log(result);
-                setSuccess(true);
+
+                sendEmailVerification(auth.currentUser)
+                    .then(() => {
+                        setSuccess(true);
+
+                    })
+
             })
             .catch(error => {
                 console.log(error);
@@ -143,6 +150,8 @@ const Register = () => {
 
                 <input className='btn btn-primary my-5' type="submit" value="Submit" />
             </form>
+
+            <p>Already Account? Please <Link to='/login' className='text-blue-600 underline'>Login</Link></p>
 
             {
                 errorMsg && <p className='text-red-400'>{errorMsg}</p>
